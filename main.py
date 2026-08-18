@@ -2,7 +2,8 @@ import json
 from fastapi import FastAPI, Body
 import uvicorn
 from dotenv import load_dotenv
-import os
+import os 
+from typing import Any
 from logger import logger
 
 
@@ -13,7 +14,7 @@ load_dotenv()
 app = FastAPI()
 
 @app.post("/")
-def webhook(body = Body()):
+def webhook(body: dict[str, Any] = Body(...)):
 	body_stringified = json.dumps(body)
 	logger.info("Received request to webhook endpoint")
 	logger.info(body_stringified)
