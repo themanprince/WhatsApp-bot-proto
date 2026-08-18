@@ -12,7 +12,7 @@ load_dotenv()
 
 app = FastAPI()
 
-@app.post("/message")
+@app.post("/")
 def webhook(body = Body()):
 	body_stringified = json.dumps(body)
 	logger.info("Received request to webhook endpoint")
