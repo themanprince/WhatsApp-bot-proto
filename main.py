@@ -15,8 +15,8 @@ load_dotenv()
 app = FastAPI()
 
 #since meta requires a get endpoint which will be used to verify the webhook
-@app.get("/")
-def verify(hub_mode:str = Query(alias="hub.mode"), hub_challenge:str = Query(alias="hub.challenge"), hub_verify_token:str = Query(alias="hub.verify_token")) -> str:
+@app.get("/", response_class=PlainTextResponse)
+def verify(hub_mode:str = Query(alias="hub.mode"), hub_challenge:str = Query(alias="hub.challenge"), hub_verify_token:str = Query(alias="hub.verify_token")):
 	my_verify_token = os.environ.get("VERIFY_TOKEN")
 	if not my_verify_token:
 		raise HTTPException(status=500, detail="please set necessary environment variables")
