@@ -2,6 +2,7 @@ import json
 from fastapi import FastAPI, Body
 import uvicorn
 from dotenv import load_dotenv
+import os
 from logger import logger
 
 
