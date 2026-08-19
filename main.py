@@ -32,6 +32,8 @@ test_counter = 0
 
 @app.post("/")
 def webhook(body: dict = Body(...)):
+	global test_counter
+	
 	logger.info("Just received a POST to webhook URL")
 	logger.info(json.dumps(body))
 	
@@ -42,7 +44,7 @@ def webhook(body: dict = Body(...)):
 				
 				senderPhoneNumber: str | None = None
 				if value:
-					senderPhoneNumber = value["contacts"]["wa_id"]
+					senderPhoneNumber = value["contacts"][0]["wa_id"]
 				
 				if not senderPhoneNumber:
 					raise HTTPException(status_code=500, detail="failed to obtain phone number to reply to")
