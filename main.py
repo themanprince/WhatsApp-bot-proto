@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os 
 from typing import Any
 from logger import logger
+from message_util import send_message
 
 
 # Load the environment variables
@@ -26,14 +27,38 @@ def verify(hub_mode:str = Query(alias="hub.mode"), hub_challenge:str = Query(ali
 	
 	return PlainTextResponse(content=hub_challenge)
 	
-	
+
+test_counter = 0	
 
 @app.post("/")
-def webhook(body: dict[str, Any] = Body(...)):
-	body_stringified = json.dumps(body)
-	logger.info("Received request to webhook endpoint")
-	logger.info(body_stringified)
-	return {"content": body_stringified}
+def webhook(body: dict = Body(...)):
+	logger.info("Just received a POST to webhook URL")
+	logger.info(json.dumps(body))
+	
+	if body["object"] == "whatsapp_business_account":
+		for entry in body["entry"]:
+			for change in entry["changes"]:
+				value = change["value"]
+				
+				senderPhoneNumber: str | None = None
+				if value:
+					senderPhoneNumber = value["contacts"]["wa_id"]
+				
+				if not senderPhoneNumber:
+					raise HTTPException(status_code=500, detail="failed to obtain phone number to reply to")
+				
+				if value["messages"]:
+					for message in value["messages"]:
+						body = f"this is response number {test_counter}"
+						test_counter = test_counter + 1
+						
+						send_message(
+							to = senderPhoneNumber,
+							body = body
+						)
+						logger.info(f"sent message reply with content={body}")
+	
+	return PlainTextResponse("Event Received")
 	
 	
 
