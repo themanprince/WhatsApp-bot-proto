@@ -21,7 +21,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir \
         fastapi \
 		uvicorn \
-		python-dotenv 
+		python-dotenv \
+		requests
 
 # Default command (change if your entry point differs)
 CMD ["python", "main.py"]
