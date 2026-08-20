@@ -44,17 +44,18 @@ def webhook(body: dict = Body(...)):
 				
 				senderPhoneNumber: str | None = None
 				if value:
-					messages = value.get("messages")
-					if not messages:
-						logger.info("GOT A PAYLOAD WITHOUT messages field")
-						return {"details": "webhook event contains no messages"}
+					contacts = value.get("contacts")
+					if not contacts:
+						continue
 						
-					senderPhoneNumber = value.get("contacts")[0]["wa_id"]
+					senderPhoneNumber = contacts[0]["wa_id"]
 				
 				if not senderPhoneNumber:
 					raise HTTPException(status_code=500, detail="failed to obtain phone number to reply to")
-				
-				if value.get("messages"):
+	
+				if not value.get("messages"):
+						logger.info("GOT A PAYLOAD WITHOUT messages field")			
+				else:
 					for message in value["messages"]:
 						body = f"this is response number {test_counter}"
 						test_counter = test_counter + 1
