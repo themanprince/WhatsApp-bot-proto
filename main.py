@@ -54,7 +54,8 @@ def webhook(body: dict = Body(...)):
 					raise HTTPException(status_code=500, detail="failed to obtain phone number to reply to")
 	
 				if not value.get("messages"):
-						logger.info("GOT A PAYLOAD WITHOUT messages field")			
+						logger.info("GOT A PAYLOAD WITHOUT messages field")
+						logger.info(json.dumps(body))		
 				else:
 					for message in value["messages"]:
 						body = f"this is response number {test_counter}"
